@@ -1,0 +1,247 @@
+@import './variables.scss';
+@import './mixin.scss';
+@import './transition.scss';
+@import './element-ui.scss';
+@import './sidebar.scss';
+@import './theme.scss';
+
+@font-face {
+  font-family: 'HelveticaNeueLTPro';
+  src: url('../assets/font/HelveticaNeueLTPro-ThEx.ttf'),
+    url('../assets/font/HelveticaNeueLTPro-ThEx.ttf')
+      format('embedded-opentype');
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+::-webkit-scrollbar-thumb {
+  background: #ddd;
+}
+body {
+  height: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+}
+
+label {
+  font-weight: 700;
+}
+
+html {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+a,
+a:focus,
+a:hover {
+  cursor: pointer;
+  color: inherit;
+  outline: none;
+  text-decoration: none;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: textfield;
+}
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+div:focus {
+  outline: none;
+}
+
+a:focus,
+a:active {
+  outline: none;
+}
+
+a,
+a:focus,
+a:hover {
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+}
+
+.clearfix {
+  &:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: ' ';
+    clear: both;
+    height: 0;
+  }
+}
+
+#app {
+  height: 100%;
+}
+
+.fix-scroll {
+  > .el-scrollbar__wrap {
+    overflow-x: auto !important;
+  }
+}
+
+.popper__arrow {
+  transform: translateX(0) !important;
+}
+
+.price-font {
+  letter-spacing: 1px;
+  font-family: HelveticaNeueLTPro;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+//main-container全局样式
+.app-main {
+  min-height: 100%;
+}
+.select-tools {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  > div {
+    display: flex;
+    flex-wrap: wrap;
+    > div {
+      min-height: 32px;
+      margin: 0 22px 22px 0;
+    }
+    &.btn {
+      min-width: 300px;
+      justify-content: flex-end;
+      margin-right: -22px;
+    }
+  }
+}
+.is-disabled {
+  textarea,
+  div {
+    color: #5a5e66 !important;
+  }
+}
+.el-table {
+  margin-bottom: 22px;
+}
+.el-tabs {
+  .el-tabs__nav {
+    margin-left: 7px;
+  }
+  .el-tabs__nav-wrap {
+    &::after {
+      display: none;
+    }
+    .el-tabs__item {
+      color: #979797;
+      &.is-active {
+        font-weight: bold;
+        font-size: 18px;
+        z-index: 2;
+        color: #000;
+      }
+    }
+    .el-tabs__active-bar {
+      left: -7px;
+      bottom: 8px;
+      height: 12px;
+      opacity: 0.5;
+      border-radius: 3px;
+      padding: 0 7px;
+      box-sizing: content-box;
+    }
+  }
+}
+
+.el-input--medium {
+  .el-input__inner {
+    height: 44px !important;
+  }
+  &.is-disabled {
+    input {
+      color: #777 !important;
+    }
+  }
+}
+.el-form-item--medium {
+  .el-cascader--medium {
+    line-height: 44px !important;
+  }
+  &:not(.is-error) {
+    &:not(.is-disabled) {
+      .el-input__inner {
+        &:not(:focus) {
+          background: #f8f8f8 !important;
+          border-color: #ebebeb !important;
+        }
+      }
+    }
+  }
+}
+
+.el-input-number--medium {
+  width: auto !important;
+  > span {
+    height: 50% !important;
+    line-height: 22px !important;
+  }
+  .el-input--medium {
+    width: auto !important;
+  }
+}
+
+.el-button--big {
+  flex: 1;
+  max-width: 230px !important;
+}
+
+.el-table {
+  .el-table__header th,
+  .el-table__body td {
+    text-align: center !important;
+  }
+}
+
+.el-button--mini.is-circle {
+  border: 0 !important;
+  &.el-button--text {
+    padding: 7px !important;
+  }
+  &:hover {
+    background: #fff !important;
+  }
+}
+
+.blackgold-theme {
+  .el-input-group__prepend {
+    background: #fff !important;
+  }
+}
+
+.dialog-footer {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.el-message {
+  min-width: 250px !important;
+  padding: 10px !important;
+  box-shadow: 0 0 5px #ddd;
+}
