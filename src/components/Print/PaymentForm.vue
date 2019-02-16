@@ -79,18 +79,13 @@
             <span>电子发票号码：{{ item.invoiceNo }}</span>
           </div>
         </div>
-        <div class="dotted bg">
-          <div>
-            <span>公司负责人：{{ item.auditBys[3].name }}</span>
-            <span>部门负责人：{{ item.auditBys[0].name }}</span>
-            <span>申请人：{{ item.payeeName }}</span>
-          </div>
-        </div>
         <div class="bg">
           <div>
-            <span>财务负责人：{{ item.auditBys[2].name }}</span>
+            <span
+              v-for="(audit, index) in item.auditBys"
+              :key="index"
+            >{{ audit.roleName ? (audit.roleName + '：') : '' }}{{ audit.name }}</span>
             <span>出纳：</span>
-            <span>审核会计：{{ item.auditBys[1].name }}</span>
           </div>
         </div>
       </div>
@@ -105,6 +100,18 @@ export default {
     printList: {
       type: Array,
       default: () => []
+    }
+  },
+  watch: {
+    printList: {
+      handler() {
+        this.printList.forEach(item => {
+          while (item.auditBys.length < 7) {
+            item.auditBys.push({})
+          }
+        })
+      },
+      deep: true
     }
   },
   methods: {
@@ -213,14 +220,28 @@ export default {
         }
         &.bg {
           background-color: #d9d9d9;
+          &:last-child {
+            height: auto;
+          }
           div {
             display: flex;
+            flex-wrap: wrap;
             width: 100%;
+            position: relative;
             > span {
               font-size: 14px;
-              min-width: 25%;
+              width: 25%;
               padding-left: 10px;
               font-weight: bold;
+              &:nth-child(5)::after {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 37px;
+                width: 100%;
+                height: 1px;
+                background: #000;
+              }
             }
           }
         }

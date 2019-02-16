@@ -1,7 +1,8 @@
 const budget = {
   state: {
     budgetList: [],
-    attachmentData: {}
+    attachmentData: {},
+    fileIdList: []
   },
   mutations: {
     SET_BUDGET_LIST: (state, list) => {
@@ -9,6 +10,9 @@ const budget = {
     },
     SET_ATTACHMENT_DATA: (state, list) => {
       state.attachmentData = list
+    },
+    SET_FILEIDLIST: (state, list) => {
+      state.fileIdList = list
     }
   },
   actions: {
@@ -17,6 +21,9 @@ const budget = {
     },
     SetAttachmentData({ commit }, list) {
       commit('SET_ATTACHMENT_DATA', list)
+    },
+    SetFileIdList({ commit }, list) {
+      commit('SET_FILEIDLIST', list)
     }
   }
 }

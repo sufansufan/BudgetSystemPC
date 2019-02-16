@@ -26,8 +26,9 @@ export default {
       if (!auditRes) {
         this.$prompt('审批不通过意见', '审核意见2', {
           confirmButtonText: '确定',
-          showCancelButton: false,
-          closeOnClickModal: false,
+          cancelButtonText: '取消',
+          showCancelButton: true,
+          closeOnClickModal: true,
           closeOnPressEscape: false,
           showClose: false,
           distinguishCancelAndClose: true,

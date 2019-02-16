@@ -54,7 +54,7 @@
     <div>
       <h3>{{ officeName }}</h3>
     </div>
-    <el-table v-loading="loading" :data="dataList[0].statisticItem" stripe element-loading-text="Loading" highlight-current-row fit>
+    <el-table v-loading="loading" :data="dataList[0].statisticItem" element-loading-text="Loading" highlight-current-row fit>
       <el-table-column prop="name" width="120">
         <template slot-scope="scope">
           <div v-if="scope.$index === 0" class="table-title">项目名称</div>
@@ -63,7 +63,7 @@
       </el-table-column>
       <el-table-column v-for="(item ,index) in dataList" :key="index" :label="item.year" :min-width="400">
         <template slot-scope="scope">
-          <div>
+          <div :class="{columnBack: index % 2 == 0}">
             <div v-if="scope.$index === 0" class="data-style table-title">
               <span v-for="o in tanleTitle" :key="o.key">{{ o.key }}</span>
             </div>
@@ -186,11 +186,16 @@ export default {
 .office-analysis-container{
   .el-table .cell{
     padding: 0px !important;
+    line-height: 35px;
+  }
+  .el-table td {
+    padding: 0px;
   }
   .table-title{
-    min-height: 30px;
+    // min-height: 35px;
+    // line-height: 35px;
     border-bottom: 1px solid #e6ebf5;
-    margin-bottom: 8px;
+    // margin-bottom: 8px;
   }
   .data-style{
     display: flex;
@@ -203,6 +208,9 @@ export default {
   .table-category{
     color: #5a5e66;
     font-size: 14px;
+  }
+  .columnBack{
+    background: #fafafa;
   }
 }
 </style>

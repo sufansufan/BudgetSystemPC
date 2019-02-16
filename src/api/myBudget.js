@@ -93,3 +93,34 @@ export const exportMyBudgetInfo = data =>
     data,
     responseType: 'arraybuffer'
   })
+
+// 删除附件
+
+export const deleteFile = data =>
+  request({
+    url: '/a/myBudget/deleteFile',
+    data
+  })
+
+// 查询附件
+
+export const getFile = data =>
+  request({
+    url: '/a/myBudget/searchFile',
+    data
+  })
+
+// 更新附件
+
+export const updateFile = data =>
+  request({
+    url: '/a/myBudget/updateFile',
+    data
+  })
+
+// 执行编辑保存
+export const editBudgetExecute = data =>
+  request({
+    url: '/a/myBudget/editBudgetExecute',
+    data
+  })

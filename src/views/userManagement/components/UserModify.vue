@@ -120,16 +120,18 @@ export default {
       handler() {
         this.selectDepart = ['1']
         if (this.editData.id) {
-          const { id: officeId } = this.editData.office
           if (this.editData.office) {
-            if (this.editData.office.parent) {
-              const { parent: { id: parentId } } = this.editData.office
-              this.selectDepart.push('1', parentId, officeId)
-              if (parentId === '1') {
-                this.selectDepart.push(parentId, officeId)
+            const { id: officeId } = this.editData.office
+            if (this.editData.office) {
+              if (this.editData.office.parent) {
+                const { parent: { id: parentId } } = this.editData.office
+                this.selectDepart.push('1', parentId, officeId)
+                if (parentId === '1') {
+                  this.selectDepart.push(parentId, officeId)
+                }
+              } else if (officeId === '1') {
+                this.selectDepart = [officeId]
               }
-            } else if (officeId === '1') {
-              this.selectDepart = [officeId]
             }
           }
           const { id, name, loginName, mobile, no, office, role: { id: roleId }, bankName, bankNo, isUseable } = this.editData
@@ -139,7 +141,7 @@ export default {
             loginName,
             mobile,
             no,
-            officeId: office.id,
+            officeId: office && office.id,
             roleId,
             bankName,
             bankNo,

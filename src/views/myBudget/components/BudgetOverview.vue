@@ -66,7 +66,7 @@
 import { mapGetters } from 'vuex'
 import CountNum from '@/components/Plugins/CountNum'
 import { parseTime } from '@/utils'
-import { saveBudget } from '@/api/myBudget'
+import { saveBudget, updateFile } from '@/api/myBudget'
 import { getBudgetByIdChart } from '@/api/budgetApproval'
 import Dialog from '@/components/Plugins/Dialog'
 import TreeMapCharts from './TreeMapCharts'
@@ -107,7 +107,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['budgetList', 'attachmentData']),
+    ...mapGetters(['budgetList', 'attachmentData', 'fileIdList']),
     totalAmount() {
       return this.budgetList.map(item => item.applyAmount).reduce((s, n) => (+s + +n), 0)
     }
@@ -173,9 +173,26 @@ export default {
         params.budgetSummary.isMergerSummary = true
         params.budgetSummary.officeIds = this.detailContent.officeIds
       }
-      return saveBudget(params).then(() => {
-        this.$message.success(type === 1 ? '预算保存成功' : '预算已保存，并提交成功')
-        this.$route.params.rid || this.$router.go(-1)
+      return new Promise((resolve, reject) => {
+        return saveBudget(params).then(({ data }) => {
+          resolve(data.budgetSummaryId)
+          this.$message.success(type === 1 ? '预算保存成功' : '预算已保存，并提交成功')
+          this.$route.params.rid || this.$router.go(-1)
+        })
+      }).then(id => {
+        if (this.$route.path.includes('edit')) {
+          return false
+        } else if (this.$route.path.includes('audit')) {
+          return false
+        } else {
+          const params = {
+            budgetSummaryId: id,
+            ids: this.fileIdList.join(',')
+          }
+          updateFile(params).then(() => {
+            this.$store.dispatch('SetFileIdList', [])
+          })
+        }
       })
     }
   }

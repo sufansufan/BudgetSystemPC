@@ -32,20 +32,25 @@
           slot-scope="scope"
         >{{ scope.row.examinePerson[0] && scope.row.examinePerson[0].name }}</template>
       </el-table-column>
-      <el-table-column prop="examinePerson[1].name" label="第二级审批">
+      <el-table-column label="第二级审批">
         <template
           slot-scope="scope"
         >{{ scope.row.examinePerson[1] && scope.row.examinePerson[1].name }}</template>
       </el-table-column>
-      <el-table-column prop="examinePerson[2].name" label="第三级审批">
+      <el-table-column label="第三级审批">
         <template
           slot-scope="scope"
         >{{ scope.row.examinePerson[2] && scope.row.examinePerson[2].name }}</template>
       </el-table-column>
-      <el-table-column prop="examinePerson[3].name" label="第四级审批">
+      <el-table-column label="第四级审批">
         <template
           slot-scope="scope"
         >{{ scope.row.examinePerson[3] && scope.row.examinePerson[3].name }}</template>
+      </el-table-column>
+      <el-table-column label="第五级审批">
+        <template
+          slot-scope="scope"
+        >{{ scope.row.examinePerson[4] && scope.row.examinePerson[4].name }}</template>
       </el-table-column>
       <el-table-column label="操作" width="100" fixed="right">
         <template slot-scope="scope">
@@ -189,8 +194,8 @@ export default {
       this.$refs.dialog.setTitle('审批流设置')
     },
     addNode() {
-      if (this.examinePerson.length === 4) {
-        this.$message.info('审批级别最大是4级')
+      if (this.examinePerson.length === 5) {
+        this.$message.info('审批级别最大是5级')
         return false
       } else {
         this.examinePerson.push({
@@ -222,6 +227,9 @@ export default {
           officeId: this.editInfo.officeId,
           examinePerson: this.examinePerson
         }
+        param.examinePerson.map((item, index) => {
+          item.level = index + 1
+        })
         editExamineSetting(param).then(res => {
           this.$refs.dialog.show = false
           this.$message.success(res.msg)
@@ -249,7 +257,7 @@ export default {
     roleSelect(item, index) {
       this.examinePerson[index].id = item.id
       this.examinePerson[index].name = item.name
-      this.examinePerson[index].level = index + 1
+      // this.examinePerson[index].level = index + 1
     }
   }
 }

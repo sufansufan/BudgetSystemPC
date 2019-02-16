@@ -189,15 +189,18 @@ export function number2CHN(num) {
 }
 
 // 导出excel
-export function exportExcel(data, title) {
+export function exportExcel(data, title, type) {
+  console.log(data)
   if (!data) return
-  const url = window.URL.createObjectURL(new Blob([data]))
+  if (!type) {
+    var url = window.URL.createObjectURL(new Blob([data]))
+  }
   const link = document.createElement('a')
   link.style.display = 'none'
-  link.href = url
+  link.href = type ? data.response ? data.response.data.filePath : data.url : url
   link.setAttribute(
     'download',
-    title + parseTime(new Date().getTime()) + '.xlsx'
+    type ? title : title + parseTime(new Date().getTime()) + '.xlsx'
   )
   document.body.appendChild(link)
   link.click()

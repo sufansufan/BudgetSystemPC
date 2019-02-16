@@ -1,7 +1,7 @@
 import { login, logout, getInfo } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { JSEncrypt } from 'jsencrypt'
-import { KEY } from '../../utils/auth'
+import { KEY } from '@/utils/auth'
 const encryptor = new JSEncrypt()
 encryptor.setPublicKey(KEY)
 

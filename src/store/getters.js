@@ -13,6 +13,7 @@ const getters = {
   addRouters: state => state.permission.addRouters,
   errorLogs: state => state.errorLog.logs,
   budgetList: state => state.budget.budgetList,
+  fileIdList: state => state.budget.fileIdList,
   attachmentData: state => state.budget.attachmentData,
   constant: state => state.constant.constant
 }

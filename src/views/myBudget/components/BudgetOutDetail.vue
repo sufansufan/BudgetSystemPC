@@ -29,7 +29,7 @@
             <el-form-item label="申请金额" prop="applyAmount" class="price-upper">
               <el-input
                 :disabled="!isEdit"
-                v-model="budgetOutApply.applyAmount"
+                v-model.trim="budgetOutApply.applyAmount"
                 @change="number2CHN"
               />
               <span class="CHN">
@@ -80,13 +80,19 @@
           <el-switch :disabled="!isEdit" v-model="budgetOutDetails.whetherRemit"/>
           <div v-show="budgetOutDetails.whetherRemit" class="budget-out-detail-right-content">
             <el-input :disabled="!isEdit" v-model="budgetOutDetails.payee" placeholder="请输入内容">
-              <template slot="prepend">收款单位</template>
+              <template slot="prepend">
+                <span>*</span>收款单位
+              </template>
             </el-input>
             <el-input :disabled="!isEdit" v-model="budgetOutDetails.bankName" placeholder="请输入内容">
-              <template slot="prepend">开户银行</template>
+              <template slot="prepend">
+                <span>*</span>开户银行
+              </template>
             </el-input>
             <el-input :disabled="!isEdit" v-model="budgetOutDetails.bankNo" placeholder="请输入内容">
-              <template slot="prepend">银行账号</template>
+              <template slot="prepend">
+                <span>*</span>银行账号
+              </template>
             </el-input>
           </div>
         </el-form-item>
@@ -105,6 +111,8 @@
                 :disabled="!isEdit"
                 v-model="budgetOutDetails.contractPrice"
                 placeholder="请输入内容"
+                type="number"
+                @mousewheel.prevent.native
               >
                 <template slot="prepend">合同总价款</template>
               </el-input>
@@ -114,6 +122,8 @@
                 :disabled="!isEdit"
                 v-model="budgetOutDetails.paymentEarly"
                 placeholder="请输入内容"
+                type="number"
+                @mousewheel.prevent.native
               >
                 <template slot="prepend">前期已付</template>
               </el-input>
@@ -121,6 +131,8 @@
                 :disabled="!isEdit"
                 v-model="budgetOutDetails.paymentEarlyRate"
                 placeholder="请输入内容"
+                type="number"
+                @mousewheel.prevent.native
               >
                 <template slot="prepend">支付比例</template>
                 <template slot="append">%</template>
@@ -131,6 +143,8 @@
                 :disabled="!isEdit"
                 v-model="budgetOutDetails.paymentApply"
                 placeholder="请输入内容"
+                type="number"
+                @mousewheel.prevent.native
               >
                 <template slot="prepend">本次申请</template>
               </el-input>
@@ -138,6 +152,8 @@
                 :disabled="!isEdit"
                 v-model="budgetOutDetails.paymentApplyRate"
                 placeholder="请输入内容"
+                type="number"
+                @mousewheel.prevent.native
               >
                 <template slot="prepend">支付比例</template>
                 <template slot="append">%</template>
@@ -147,6 +163,8 @@
               :disabled="!isEdit"
               v-model="budgetOutDetails.paymentSurplus"
               placeholder="请输入内容"
+              type="number"
+              @mousewheel.prevent.native
             >
               <template slot="prepend">剩余待付</template>
             </el-input>
@@ -303,6 +321,19 @@ export default {
         this.$refs.budgetOutApply.validate((valid) => {
           if (valid) {
             const { budgetLevelId } = this.budgetOutApply
+            const { whetherRemit, payee, bankName, bankNo } = this.budgetOutDetails
+            if (whetherRemit) {
+              if (!payee) {
+                this.$message.error('请输入收款单位')
+                return
+              } else if (!bankName) {
+                this.$message.error('请输入开户银行')
+                return
+              } else if (!bankNo) {
+                this.$message.error('请输入银行账号')
+                return
+              }
+            }
             const params = {
               Loading: true,
               id: this.$route.params.id || '',
@@ -448,6 +479,9 @@ export default {
     padding: 15px 20px 25px;
     box-shadow: 0 0 20px 10px #ececec;
     border-radius: 5px;
+  }
+  .budget-out-detail-right-content span {
+    color: red;
   }
 }
 </style>

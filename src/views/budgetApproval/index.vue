@@ -18,7 +18,7 @@
               placeholder="选择预算月份"
             />
           </div>
-          <div>
+          <div v-show="activeName !== 'headmaster'">
             <el-cascader
               :options="constant.office"
               :props="{value: 'id', label: 'name'}"
@@ -146,7 +146,7 @@
               </template>
             </template>
             <template v-else-if="activeName === 'logistics'">
-              <el-button type="text" icon="el-icon-check" @click="rowAudit(scope.row)">审批</el-button>
+              <el-button :disabled="!scope.row.notAuditSum" type="text" icon="el-icon-check" @click="rowAudit(scope.row)">审批</el-button>
             </template>
             <template v-else-if="activeName === 'headmaster'">
               <el-button
@@ -210,7 +210,7 @@
           >批量打印付款申请单</el-button>
         </template>
         <template v-else-if="activeName === 'logistics'">
-          <el-button type="primary" icon="el-icon-check" @click="allAudit">批量审批</el-button>
+          <el-button :disabled="!logisticsDisabled" type="primary" icon="el-icon-check" @click="allAudit">批量审批</el-button>
         </template>
       </div>
       <el-pagination
@@ -273,6 +273,11 @@ export default {
     hasGenerateBudgetBtn() {
       const { budgetBelongDateString } = this.multipleSelection[0] || {}
       return !!this.multipleSelection.length && this.multipleSelection.every(item => item.isMergerSummary && item.budgetBelongDateString === budgetBelongDateString)
+    },
+    logisticsDisabled() {
+      return this.multipleSelection.reduce((one, two) => {
+        return one + two.notAuditSum
+      }, 0)
     }
   },
   watch: {
@@ -419,10 +424,13 @@ export default {
             '审核人': auditBy ? auditBy.name : '',
             '审批日期': auditDateString
           }
+          var num = 0
           notAduits.forEach(child => {
             const { notAudit, countNum } = child
             item[child.budgetLevelName] = notAudit + ' / ' + countNum
+            num += Number(notAudit)
           })
+          item.notAuditSum = num
           return item
         })
       })

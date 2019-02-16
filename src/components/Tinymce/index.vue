@@ -3,18 +3,20 @@
     <textarea :id="tinymceId" class="tinymce-textarea"/>
     <div class="editor-custom-btn-container">
       <editorImage color="#1890ff" class="editor-upload-btn" @successCBK="imageSuccessCBK"/>
+      <editor-mould @setContent="setContent"/>
     </div>
   </div>
 </template>
 
 <script>
 import editorImage from './components/editorImage'
+import editorMould from './components/editorMould'
 import plugins from './plugins'
 import toolbar from './toolbar'
 
 export default {
   name: 'Tinymce',
-  components: { editorImage },
+  components: { editorImage, editorMould },
   props: {
     id: {
       type: String,
@@ -180,7 +182,11 @@ export default {
   position: absolute;
   right: 4px;
   top: 4px;
+  display: flex;
   /*z-index: 2005;*/
+}
+.insert-moulds {
+  margin-left: 20px;
 }
 .fullscreen .editor-custom-btn-container {
   z-index: 10000;

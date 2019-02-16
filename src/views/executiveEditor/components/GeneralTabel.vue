@@ -65,22 +65,24 @@ export default {
     },
     totalAmount() {
       const totalAmount = this.listData.map((item, index) => {
-        const { id, name } = this.copyParentData[index]
+        const { id, name, budgetId } = this.copyParentData[index]
         const newItem = {
           budgetLevel: {
             id,
             name
           },
+          budgetId,
           applyAmount: item.map(item => item.applyAmount).reduce((s, n) => (+s + +n), 0),
           realAmount: item.map(item => item.realAmount).reduce((s, n) => (+s + +n), 0),
           budgets: item.map(item => {
-            const { applyAmount, realAmount, budgetLevel: { id, name, tips }, richText } = item
+            const { applyAmount, realAmount, budgetLevel: { id, name, tips, budgetId }, richText } = item
             item = {
               budgetLevel: {
                 id,
                 name,
                 tips
               },
+              budgetId,
               applyAmount,
               realAmount,
               richText
@@ -100,12 +102,13 @@ export default {
         this.copyParentData = JSON.parse(JSON.stringify(this.levelData))
         this.listData = this.copyParentData.map(item => {
           return item.budgetLevels.map(row => {
-            const { id, name, tips, applyAmount = '', realAmount = '', richText } = row
+            const { id, name, tips, budgetId, applyAmount = '', realAmount = '', richText } = row
             row = {
               budgetLevel: {
                 id,
                 name,
-                tips
+                tips,
+                budgetId
               },
               applyAmount,
               realAmount,
@@ -148,7 +151,7 @@ export default {
       }
     },
     fixPrice(row) {
-      row.applyAmount = Number(row.applyAmount < 0 ? 0 : row.applyAmount).toFixed(2)
+      row.realAmount = Number(row.realAmount < 0 ? 0 : row.realAmount).toFixed(2)
     },
     editAccessories(row, item) {
       this.$refs.dialog.setTitle(row.name + ' 附件')

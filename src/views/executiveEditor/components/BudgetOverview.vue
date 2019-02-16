@@ -43,7 +43,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import CountNum from '@/components/Plugins/CountNum'
-import { saveBudget } from '@/api/myBudget'
+import { editBudgetExecute } from '@/api/myBudget'
 export default {
   name: 'ExecutiveEditorBudgetOverview',
   components: {
@@ -70,7 +70,22 @@ export default {
   },
   methods: {
     saveBudget() {
-      const params = {
+      const budgets = []
+      this.budgetList.forEach(item => {
+        const { budgetId: id, realAmount } = item
+        budgets.push({
+          id,
+          realAmount
+        })
+        item.budgets.forEach(row => {
+          const { budgetId: id, realAmount } = row
+          budgets.push({
+            id,
+            realAmount
+          })
+        })
+      })
+      /*   const params = {
         Loading: true,
         budgetSummary: {
           id: this.detailContent.id, // 编辑传入该值
@@ -80,8 +95,8 @@ export default {
           purchaseApplys: [].concat(...Object.values(this.attachmentData)),
           reserveFundApply: this.reserveFundApply
         }
-      }
-      saveBudget(params).then(() => {
+      } */
+      editBudgetExecute({ budgets }).then(() => {
         this.$message.success('预算执行编辑成功')
         this.$router.push({ name: 'ExecutiveEditor' })
       })

@@ -1,5 +1,6 @@
 import Cookies from 'js-cookie'
 
+const fastNav = Cookies.get('fastNav')
 const app = {
   state: {
     sidebar: {
@@ -9,7 +10,7 @@ const app = {
     device: 'desktop',
     drawer: false,
     theme: Cookies.get('theme') || 'blackgold',
-    fastNav: Cookies.get('fastNav') ? JSON.parse(Cookies.get('fastNav')) : true
+    fastNav: fastNav ? JSON.parse(fastNav) : false
   },
   mutations: {
     TOGGLE_SIDEBAR: state => {

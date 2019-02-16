@@ -21,7 +21,7 @@
           />
         </div>
         <div>
-          <el-input v-model.trim="select.createByName" placeholder="请输入制表人"/>
+          <el-input v-model.trim="select.applyPerson" placeholder="请输入申请人"/>
         </div>
         <div>
           <el-select v-model="select.status" placeholder="请选择状态">

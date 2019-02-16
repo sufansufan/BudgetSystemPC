@@ -6,15 +6,36 @@
     <el-table :data="createdData" style="width: 100%" header-row-class-name="table-head">
       <el-table-column type="index" label="序号"/>
       <el-table-column v-if="isAudit" prop="office.name" label="部门" width="180"/>
+      <el-table-column label="类别" width="150">
+        <template slot-scope="scope">
+          <div>
+            <el-select
+              v-model="scope.row.categoryItem"
+              :disabled="!isModify || scope.row.disabled"
+              size="medium"
+              placeholder="请选择"
+              @change="categoryItemChange"
+            >
+              <el-option
+                v-for="item in categoryList"
+                :key="item.id"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column label="名称" width="150">
         <template slot-scope="scope">
           <div>
             <el-select
               v-model="scope.row.name"
-              :disabled="!isModify || scope.row.disabled"
+              :disabled="!scope.row.categoryItem || !isModify || scope.row.disabled"
               size="medium"
               placeholder="请选择"
               @change="val => purchaseChange(val, scope.$index)"
+              @focus="getPurchaseInfoList(scope.row.categoryItem)"
             >
               <el-option
                 v-for="item in purchaseInfos"
@@ -23,6 +44,18 @@
                 :value="item.name"
               />
             </el-select>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="品牌" min-width="150">
+        <template slot-scope="scope">
+          <div>
+            <el-input
+              v-model="scope.row.brandName"
+              :disabled="!scope.row.name || !isModify || scope.row.disabled"
+              size="medium"
+              placeholder="请输入"
+            />
           </div>
         </template>
       </el-table-column>
@@ -95,30 +128,6 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="备注" min-width="200">
-        <template slot-scope="scope">
-          <div>
-            <el-input
-              v-model="scope.row.remarks"
-              :disabled="!scope.row.name || !isModify || scope.row.disabled"
-              size="medium"
-              placeholder="请输入"
-            />
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column label="品牌" min-width="150">
-        <template slot-scope="scope">
-          <div>
-            <el-input
-              v-model="scope.row.brandName"
-              :disabled="!scope.row.name || !isModify || scope.row.disabled"
-              size="medium"
-              placeholder="请输入"
-            />
-          </div>
-        </template>
-      </el-table-column>
       <el-table-column label="供应商" min-width="150">
         <template slot-scope="scope">
           <div>
@@ -143,7 +152,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column v-if="isAudit" label="后勤意见" width="150" fixed="right">
+      <el-table-column v-if="isAudit || !isModify" label="后勤意见" width="150" fixed="right">
         <template slot-scope="scope">
           <el-select
             v-model="scope.row.advice"
@@ -159,6 +168,18 @@
               :value="item"
             />
           </el-select>
+        </template>
+      </el-table-column>
+      <el-table-column label="备注" min-width="200">
+        <template slot-scope="scope">
+          <div>
+            <el-input
+              v-model="scope.row.remarks"
+              :disabled="!scope.row.name || !isModify || scope.row.disabled"
+              size="medium"
+              placeholder="请输入"
+            />
+          </div>
         </template>
       </el-table-column>
       <el-table-column label="操作" fixed="right">
@@ -183,6 +204,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { getPurchaseInfoList } from '@/api/approvalSettings'
+import { getDictList } from '@/api'
 import CountNum from '@/components/Plugins/CountNum'
 export default {
   components: {
@@ -205,6 +227,7 @@ export default {
   data() {
     return {
       purchaseInfos: [],
+      categoryList: [],
       initialData: {
         budgetLevel: {
           id: '', // 预算层次表id
@@ -274,18 +297,25 @@ export default {
     }
   },
   created() {
+    this.getcategoryList()
     if (this.isCreate || this.$route.params.id && this.isEdit) {
       this.getPurchaseInfoList()
       this.isAudit || this.createdData.push(JSON.parse(JSON.stringify(this.initialData)))
     }
   },
   methods: {
-    getPurchaseInfoList() {
+    getPurchaseInfoList(type) {
       getPurchaseInfoList({
+        type,
         budgetLevelId: this.levelAttachs.id,
         isUseable: true
       }).then(res => {
         this.purchaseInfos = res.data.list
+      })
+    },
+    getcategoryList() {
+      getDictList({ dictType: this.levelAttachs.id }).then(({ data }) => {
+        this.categoryList = data.list
       })
     },
     purchaseChange(val, index) {
@@ -301,6 +331,9 @@ export default {
       if (!this.createdData[index + 1] && !this.isAudit) {
         this.createdData.push(JSON.parse(JSON.stringify(this.initialData)))
       }
+    },
+    categoryItemChange(val) {
+      this.getPurchaseInfoList(val)
     },
     deleteRow(index) {
       this.createdData.splice(index, 1)

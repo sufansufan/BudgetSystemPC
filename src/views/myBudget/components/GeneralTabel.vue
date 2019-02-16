@@ -23,8 +23,8 @@
           />
           <template v-if="!isMerge">
             <i
-              v-if="listData[index][k].richText || isEdit"
-              :class="{enclosure: true, yes: listData[index][k].richText}"
+              v-if="listData[index][k].richText || isEdit || listData[index][k].whetherHasRichText"
+              :class="{enclosure: true, yes: listData[index][k].richText || (listData[index][k].status !== undefined ? listData[index][k].status : listData[index][k].whetherHasRichText)}"
               title="附件"
               @click="editAccessories(inp, listData[index][k])"
             />
@@ -37,6 +37,7 @@
       <edit-accessories
         :init-data="selectedAccessories"
         :is-edit="isEdit"
+        :fet-upload-data="uploadData"
         @saved="saveAccessories"
         @close="$refs.dialog.show = false"
         @temp="tempChanged = true"
@@ -50,6 +51,7 @@ import { mapGetters } from 'vuex'
 import CountNum from '@/components/Plugins/CountNum'
 import Dialog from '@/components/Plugins/Dialog'
 import EditAccessories from './EditAccessories'
+import { getFile } from '@/api/myBudget'
 export default {
   components: {
     CountNum,
@@ -75,7 +77,11 @@ export default {
       copyParentData: [],
       listData: [],
       selectedAccessories: {},
-      tempChanged: false
+      tempChanged: false,
+      uploadData: {
+        typeId: '',
+        fileList: []
+      }
     }
   },
   computed: {
@@ -93,7 +99,7 @@ export default {
           },
           applyAmount: item.map(item => item.applyAmount).reduce((s, n) => (+s + +n), 0),
           budgets: item.map(item => {
-            const { applyAmount, budgetLevel: { id, name, tips }, richText } = item
+            const { applyAmount, budgetLevel: { id, name, tips, whetherHasRichText }, richText, fileList, status } = item
             item = {
               budgetLevel: {
                 id,
@@ -101,7 +107,10 @@ export default {
                 tips
               },
               applyAmount,
-              richText
+              richText,
+              fileList,
+              whetherHasRichText,
+              status
             }
             return item
           })
@@ -118,7 +127,7 @@ export default {
         this.copyParentData = JSON.parse(JSON.stringify(this.levelData))
         this.listData = this.copyParentData.map(item => {
           return item.budgetLevels.map(row => {
-            const { id, name, tips, applyAmount = '', richText } = row
+            const { id, name, tips, applyAmount = '', richText, fileList, whetherHasRichText } = row
             row = {
               budgetLevel: {
                 id,
@@ -126,11 +135,31 @@ export default {
                 tips
               },
               applyAmount,
-              richText
+              richText,
+              fileList,
+              whetherHasRichText
             }
             return row
           })
         })
+      },
+      deep: true
+    },
+    listData: {
+      handler() {
+        const ids = []
+        this.listData.forEach(item => {
+          if (Array.isArray(item)) {
+            item.forEach(d => {
+              if (d.fileList) {
+                d.fileList.map(o => {
+                  ids.push(o.id)
+                })
+              }
+            })
+          }
+        })
+        this.$store.dispatch('SetFileIdList', ids)
       },
       deep: true
     },
@@ -168,17 +197,40 @@ export default {
       row.applyAmount = Number(row.applyAmount < 0 ? 0 : row.applyAmount).toFixed(2)
     },
     editAccessories(row, item) {
+      this.uploadData.typeId = row.id
       this.$refs.dialog.setTitle(row.name + ' 附件')
       this.selectedAccessories = item
+      if (item.fileList === undefined) {
+        this.selectedAccessories.fileList = []
+      }
       if (this.tempChanged) {
         this.$set(this.selectedAccessories, '__key', new Date().getTime())
       }
+      const { id } = this.$route.params
+      if (id) {
+        const params = {
+          budgetSummaryId: id,
+          budgetLevelId: row.id
+        }
+        getFile(params).then(({ data }) => {
+          this.uploadData.fileList = data.fileList
+        })
+      } else {
+        this.uploadData.fileList = item.fileList
+      }
       this.$refs.dialog.show = true
     },
-    saveAccessories(content) {
+    saveAccessories(content, file) {
+      console.log(content, file)
       this.tempChanged = false
       this.$refs.dialog.show = false
       this.selectedAccessories.richText = content
+      this.selectedAccessories.fileList = file
+      if (content || file && file.length) {
+        this.selectedAccessories.status = true
+      } else {
+        this.selectedAccessories.status = false
+      }
     }
   }
 }
